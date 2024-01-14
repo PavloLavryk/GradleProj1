@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+
+}
+task customFatJar(type: Jar) {
+    archiveFileName = 'MyName.jar'
+
+    manifest {
+        attributes 'Main-Class' : 'org.example.App'
+
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from{configurations.runtimeClasspath.collect{ it.isDirectory() ? it : zipTree(it)}}
+    with jar
+
+    doLast {
+        System.out.println("Jar is compiled!")
+    }
+}
+
+
+test {
+    useJUnitPlatform()
+}
